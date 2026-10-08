@@ -1,4 +1,4 @@
-/* Sunday Scaries Weekly: renders every section from window.SCARIES (data.js). */
+/* Sunday Scaries War Room: renders every section from window.SCARIES (data.js). */
 (function () {
   'use strict';
   const D = window.SCARIES;
