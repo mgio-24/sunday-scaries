@@ -371,8 +371,10 @@ footer { border-top: 1px solid var(--rule); padding-top: 22px; display: grid; ga
   }).join('') || '<p class="mist">No games scheduled this week.</p>';
 
   // points race
-  (function race() {
-    const W = 820, H = 360, ml = 44, mr = 16, mt = 12, mb = 30;
+  let raceOn = null;
+  function race() {
+    // drawn at the panel's real pixel width so labels stay 12px on phones
+    const W = Math.max(280, Math.round($('racebox').clientWidth - 36)), H = W < 560 ? 260 : 360, ml = 40, mr = 12, mt = 12, mb = 30;
     const weeks = S[order[0]].weekly.map(w => w.w);
     const series = order.map(t => { let c = 0; return { t, pts: [0, ...S[t].weekly.map(w => (c += w.pts))] }; });
     const max = Math.ceil(Math.max(...series.map(s => s.pts[s.pts.length - 1])) / 100) * 100;
@@ -380,25 +382,28 @@ footer { border-top: 1px solid var(--rule); padding-top: 22px; display: grid; ga
     let g = '';
     for (let v = 0; v <= max; v += 100) g += `<line class="gl" x1="${ml}" x2="${W - mr}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${ml - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
     g += `<text class="ax" x="${x(0)}" y="${H - 8}" text-anchor="start">Start</text>`;
-    weeks.forEach((w, i) => g += `<text class="ax" x="${x(i + 1)}" y="${H - 8}" text-anchor="${i === weeks.length - 1 ? 'end' : 'middle'}">Wk ${w}</text>`);
+    weeks.forEach((w, i) => g += `<text class="ax" x="${x(i + 1)}" y="${H - 8}" text-anchor="${i === weeks.length - 1 ? 'end' : 'middle'}">${W < 560 ? '' : 'Wk '}${w}</text>`);
     const lines = series.slice().reverse().map(s => `<path class="ln" data-t="${s.t}" stroke="${COL[s.t]}" d="${s.pts.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ')}"/>` +
       `<circle class="dot" data-t="${s.t}" cx="${x(s.pts.length - 1)}" cy="${y(s.pts[s.pts.length - 1])}" r="4" fill="${COL[s.t]}"/>`).join('');
     const svg = $('racesvg'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.innerHTML = g + lines;
     const byTotal = series.slice().sort((a, b) => b.pts[b.pts.length - 1] - a.pts[a.pts.length - 1]);
     $('legend').innerHTML = byTotal.map(s => `<button type="button" aria-pressed="false" data-t="${s.t}" style="--tc:${COL[s.t]}"><i></i>${nm(s.t)} <span class="mist tn">${Math.round(s.pts[s.pts.length - 1])}</span></button>`).join('');
-    const box = $('racebox'); let on = null;
-    const set = t => {
-      on = on === t ? null : t;
-      box.classList.toggle('focus', !!on);
-      box.querySelectorAll('[data-t]').forEach(el => {
-        const hit = el.dataset.t === on;
-        if (el.tagName === 'BUTTON') el.setAttribute('aria-pressed', String(hit)); else el.classList.toggle('on', hit);
-      });
-      if (on) svg.appendChild(svg.querySelector(`path[data-t="${on}"]`)), svg.appendChild(svg.querySelector(`circle[data-t="${on}"]`));
-    };
-    $('legend').addEventListener('click', e => { const b = e.target.closest('button[data-t]'); if (b) set(b.dataset.t); });
-    svg.addEventListener('click', e => { const p = e.target.closest('[data-t]'); if (p) set(p.dataset.t); });
-  })();
+    paintRace();
+  }
+  function paintRace() {
+    const box = $('racebox'), svg = $('racesvg');
+    box.classList.toggle('focus', !!raceOn);
+    box.querySelectorAll('[data-t]').forEach(el => {
+      const hit = el.dataset.t === raceOn;
+      if (el.tagName === 'BUTTON') el.setAttribute('aria-pressed', String(hit)); else el.classList.toggle('on', hit);
+    });
+    if (raceOn) svg.appendChild(svg.querySelector(`path[data-t="${raceOn}"]`)), svg.appendChild(svg.querySelector(`circle[data-t="${raceOn}"]`));
+  }
+  const pickRace = t => { raceOn = raceOn === t ? null : t; paintRace(); };
+  $('legend').addEventListener('click', e => { const b = e.target.closest('button[data-t]'); if (b) pickRace(b.dataset.t); });
+  $('racesvg').addEventListener('click', e => { const p = e.target.closest('[data-t]'); if (p) pickRace(p.dataset.t); });
+  race();
+  let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(race, 150); });
 
   // standings
   const cols = [
