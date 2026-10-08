@@ -215,5 +215,5 @@
   $('posrank').innerHTML = `<thead><tr><th scope="col">Team</th>${P.map(p => `<th scope="col">${p}</th>`).join('')}</tr></thead><tbody>` +
     order.map(t => `<tr><td>${team(t)}</td>${P.map(p => `<td class="cell" style="background:${heat(D.posRank[t][p])}">#${D.posRank[t][p]}<br><span class="dim" style="font-weight:400;font-size:.75rem">${Math.round(D.posPts[t][p])}</span></td>`).join('')}</tr>`).join('') + '</tbody>';
 
-  $('foot-upd').textContent = `Data from ESPN, last pulled ${M.generated}. The site refreshes Thursday, Friday, Monday and Tuesday mornings.`;
+  $('foot-upd').textContent = `Data from ESPN, last pulled ${M.generated}. The site refreshes Thursday, Friday, Sunday, Monday and Tuesday mornings.`;
 })();
