@@ -1,0 +1,238 @@
+/* Sunday Scaries Weekly
+   Concept: a sports magazine printed on black. Type does the work: Libre Bodoni for display and numerals,
+   Public Sans for reading. Warm bone ink on true black, one gold accent, team colors only as small marks.
+   Layout: cover (wordmark + contents), then long typographic sections on a 72rem measure. No card grids. */
+
+:root {
+  /* color */
+  --ink: #070707;        /* page */
+  --ink-2: #0F0F0E;      /* raised surfaces */
+  --ink-3: #181816;      /* hover, tracks */
+  --hair: #262521;       /* rules */
+  --hair-2: #3A3832;
+  --paper: #EDE7DB;      /* primary text */
+  --dim: #9A958A;        /* secondary text */
+  --faint: #67635B;
+  --gold: #E2B33C;       /* the one accent */
+  --red: #D9604C;        /* losses, shame */
+  --sage: #8FBC97;       /* wins */
+
+  /* type */
+  --serif: "Libre Bodoni", "Bodoni 72", Didot, "Times New Roman", serif;
+  --sans: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* spacing scale (rem) */
+  --s1: .25rem; --s2: .5rem; --s3: .75rem; --s4: 1rem; --s5: 1.5rem; --s6: 2rem; --s7: 3rem; --s8: 4.5rem; --s9: 7rem;
+
+  --measure: 72rem;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --fast: 180ms; --med: 260ms;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box }
+html { background: var(--ink); -webkit-text-size-adjust: 100% }
+body { margin: 0; background: var(--ink); color: var(--paper); font: 400 1rem/1.6 var(--sans); padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px) }
+img, svg { max-width: 100% }
+[hidden] { display: none !important }
+h1, h2, h3, h4 { margin: 0; font-family: var(--serif); font-weight: 500; line-height: 1.02; text-wrap: balance; letter-spacing: -.01em }
+p { margin: 0 }
+a { color: inherit; text-decoration: none }
+table, .num { font-variant-numeric: tabular-nums lining-nums }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px }
+.skip { position: absolute; left: -999px; top: var(--s2); background: var(--paper); color: var(--ink); padding: var(--s2) var(--s4); z-index: 50 }
+.skip:focus { left: var(--s4) }
+.w { color: var(--sage) } .l { color: var(--red) } .dim { color: var(--dim) }
+
+/* link underline micro-interaction */
+.u { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size var(--med) var(--ease) }
+.u:hover, .u:focus-visible { background-size: 100% 1px }
+
+/* ---------- nav ---------- */
+.nav { position: sticky; top: 0; z-index: 20; padding: var(--s3) var(--s4); padding-top: calc(var(--s3) + env(safe-area-inset-top, 0px));
+  margin-top: calc(-1 * env(safe-area-inset-top, 0px));
+  background: color-mix(in srgb, var(--ink) 72%, transparent); backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid color-mix(in srgb, var(--hair) 80%, transparent) }
+.nav-in { max-width: var(--measure); margin: 0 auto; display: flex; align-items: center; gap: var(--s5) }
+.wordmark { font: 500 1.35rem/1 var(--serif); letter-spacing: -.01em; flex: none }
+.wordmark em { font-style: italic }
+.nav nav { display: flex; gap: var(--s1); margin-left: auto; overflow-x: auto; scrollbar-width: none; min-width: 0 }
+.nav nav::-webkit-scrollbar { display: none }
+.nav nav a { white-space: nowrap; font-size: .875rem; color: var(--dim); padding: var(--s2) var(--s3); border-radius: 999px; transition: color var(--fast) var(--ease), background-color var(--fast) var(--ease) }
+.nav nav a:hover { color: var(--paper); background: var(--ink-3) }
+
+/* ---------- layout ---------- */
+main { padding: 0 var(--s4) var(--s9) }
+.block, .cover, .about { max-width: var(--measure); margin: 0 auto }
+.block { padding-top: var(--s9); scroll-margin-top: var(--s7); display: grid; gap: var(--s6) }
+.block-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 26rem); gap: var(--s4) var(--s7); align-items: end; padding-bottom: var(--s5); border-bottom: 1px solid var(--hair-2) }
+.block-head h2 { font-size: clamp(2.6rem, 6vw, 4.5rem) }
+.block-head p { color: var(--dim); font-size: .9375rem; line-height: 1.55 }
+.sub-title { font-size: 1.75rem; margin-top: var(--s5) }
+.fine { color: var(--faint); font-size: .8125rem }
+.two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr)); gap: var(--s6) var(--s8) }
+.two-col > div { display: grid; gap: var(--s4); align-content: start; min-width: 0 }
+@media (max-width: 48rem) { .block-head { grid-template-columns: minmax(0, 1fr) } .block { padding-top: var(--s8) } }
+
+/* team mark: a small shield in the team's color */
+.mark { --s: 1.05rem; display: inline-block; width: var(--s); height: calc(var(--s) * 1.14); flex: none; background: var(--tc);
+  clip-path: polygon(0 0, 100% 0, 100% 68%, 50% 100%, 0 68%); vertical-align: -.15em }
+.team { display: inline-flex; align-items: center; gap: var(--s2); min-width: 0 }
+.team span { overflow-wrap: anywhere }
+
+/* ---------- cover ---------- */
+.cover { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: var(--s7) var(--s8); padding-top: var(--s8); align-items: end }
+.issue { font-size: .9375rem; color: var(--gold); margin-bottom: var(--s5) }
+.cover h1 { font-size: clamp(4.5rem, 13.5vw, 11rem); font-weight: 500; line-height: .86; letter-spacing: -.035em; margin-left: -.04em }
+.cover h1 em { font-style: italic; font-weight: 400 }
+.dek { font: 400 clamp(1.25rem, 2.2vw, 1.6rem)/1.35 var(--serif); max-width: 34ch; margin-top: var(--s6); color: var(--paper) }
+.stamp { color: var(--dim); font-size: .875rem; margin-top: var(--s5) }
+.stamp b { color: var(--paper); font-weight: 600 }
+.contents { border-top: 1px solid var(--hair-2); padding-top: var(--s4) }
+.contents h2 { font: italic 500 1.4rem/1 var(--serif); margin-bottom: var(--s3) }
+.contents ol { list-style: none; margin: 0; padding: 0 }
+.contents li + li { border-top: 1px solid var(--hair) }
+.contents a { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 var(--s4); padding: var(--s3) 0; transition: padding var(--med) var(--ease) }
+.contents a:hover { padding-left: var(--s2) }
+.contents .t { font: 500 1.125rem/1.25 var(--serif) }
+.contents .x { grid-column: 1; color: var(--dim); font-size: .8125rem; margin-top: 2px }
+.contents .go { grid-row: span 2; align-self: center; color: var(--faint); transition: color var(--fast) var(--ease), transform var(--med) var(--ease) }
+.contents a:hover .go { color: var(--gold); transform: translateX(3px) }
+@media (max-width: 56rem) { .cover { grid-template-columns: minmax(0, 1fr); padding-top: var(--s7) } }
+
+/* ---------- slate ---------- */
+.slate { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--s7) }
+.fixture { display: grid; gap: var(--s3); padding: var(--s5) 0; border-bottom: 1px solid var(--hair); transition: background-color var(--med) var(--ease) }
+.fx-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: var(--s4) }
+.fx-row .team { font: 500 1.35rem/1.15 var(--serif) }
+.fx-row .pts { font: 500 1.75rem/1 var(--serif); font-variant-numeric: tabular-nums lining-nums }
+.fx-row.fav .pts { color: var(--gold) }
+.odds { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--s3); align-items: center; font-size: .8125rem; color: var(--dim) }
+.odds .bar { height: 3px; background: var(--ink-3); border-radius: 2px; overflow: hidden; display: flex }
+.odds .bar i { display: block; height: 100% }
+.fx-meta { font-size: .8125rem; color: var(--dim) }
+.fx-alert { font-size: .8125rem; color: var(--red) }
+.fx-note { font: italic 400 1rem/1.45 var(--serif); color: var(--paper) }
+@media (max-width: 52rem) { .slate { grid-template-columns: minmax(0, 1fr) } }
+
+/* ---------- ladder (power rankings) ---------- */
+.ladder { list-style: none; margin: 0; padding: 0 }
+.rung { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) 11rem; gap: var(--s2) var(--s6); padding: var(--s6) 0; border-bottom: 1px solid var(--hair);
+  transition: transform var(--med) var(--ease) }
+.rung:hover { transform: translateX(6px) }
+.rung .no { font: italic 400 clamp(4.5rem, 8vw, 6.75rem)/.8 var(--serif); letter-spacing: -.04em; color: var(--faint); text-align: right; font-variant-numeric: lining-nums }
+.rung:nth-child(-n+3) .no { color: var(--paper) }
+.rung:first-child .no { color: var(--gold) }
+.rung .body { display: grid; gap: var(--s3); min-width: 0 }
+.rung h3 { font-size: clamp(1.9rem, 3.4vw, 2.75rem); display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap }
+.rung:first-child h3 { font-size: clamp(2.4rem, 5vw, 4rem) }
+.rung h3 .mark { --s: .85em; vertical-align: 0 }
+.facts { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s5); font-size: .875rem; color: var(--dim) }
+.facts b { color: var(--paper); font-weight: 600 }
+.rung .blurb { max-width: 62ch; font-size: 1rem; line-height: 1.6 }
+.rung .side { display: grid; justify-items: end; align-content: start; gap: var(--s4) }
+.move { font-size: .8125rem; color: var(--dim); white-space: nowrap }
+.move.up { color: var(--sage) } .move.down { color: var(--red) }
+.spark { display: flex; align-items: flex-end; gap: 5px; height: 2.75rem }
+.spark i { width: .55rem; border-radius: 1px; background: var(--hair-2); transition: background-color var(--med) var(--ease) }
+.rung:hover .spark i { background: color-mix(in srgb, var(--tc) 45%, var(--hair-2)) }
+.spark i.hot, .rung:hover .spark i.hot { background: var(--tc) }
+@media (prefers-reduced-motion: no-preference) {
+  .rung { animation: settle .7s var(--ease) both; animation-delay: calc(var(--i) * 40ms) }
+  @keyframes settle { from { transform: translateY(10px); opacity: .3 } to { transform: none; opacity: 1 } }
+}
+@media (max-width: 48rem) {
+  .rung { grid-template-columns: 3.75rem minmax(0, 1fr); gap: var(--s3) var(--s4); padding: var(--s5) 0 }
+  .rung .no { font-size: 3.75rem; grid-row: span 2 }
+  .rung .side { grid-column: 2; grid-auto-flow: column; justify-content: start; align-items: center; justify-items: start }
+  .spark { height: 1.75rem }
+  .rung:hover { transform: none }
+}
+
+/* ---------- race chart ---------- */
+.race { margin: 0; display: grid; gap: var(--s5) }
+.race svg { width: 100%; height: auto; display: block; overflow: visible }
+.race .gl { stroke: var(--hair) } .race .ax { fill: var(--faint); font: 400 12px var(--sans) }
+.race path.ln { fill: none; stroke-width: 1.75; stroke-linejoin: round; stroke-linecap: round; opacity: .85; transition: opacity var(--med) var(--ease), stroke-width var(--med) var(--ease) }
+.race circle.dot { transition: opacity var(--med) var(--ease) }
+.race.focus path.ln, .race.focus circle.dot { opacity: .1 }
+.race.focus path.ln.on { opacity: 1; stroke-width: 3.25 } .race.focus circle.dot.on { opacity: 1 }
+.legend { display: flex; flex-wrap: wrap; gap: var(--s2) }
+.legend button { font: inherit; font-size: .8125rem; color: var(--dim); background: none; border: 1px solid var(--hair-2); border-radius: 999px; padding: var(--s1) var(--s3) var(--s1) var(--s2);
+  display: inline-flex; align-items: center; gap: var(--s2); cursor: pointer; transition: color var(--fast) var(--ease), border-color var(--fast) var(--ease), transform var(--fast) var(--ease) }
+.legend button:hover { color: var(--paper); border-color: var(--faint); transform: translateY(-1px) }
+.legend button[aria-pressed="true"] { color: var(--paper); border-color: var(--tc) }
+.legend button .mark { --s: .7rem }
+
+/* ---------- tables ---------- */
+.table-wrap { overflow-x: auto; margin-inline: calc(-1 * var(--s1)); padding-inline: var(--s1) }
+table { border-collapse: collapse; width: 100%; font-size: .9375rem }
+th, td { padding: var(--s3) var(--s4); text-align: right; white-space: nowrap; border-bottom: 1px solid var(--hair) }
+th { font-weight: 500; font-size: .8125rem; color: var(--faint); border-bottom-color: var(--hair-2) }
+th:first-child, td:first-child { text-align: left; padding-left: 0; position: sticky; left: 0; background: var(--ink); z-index: 1 }
+tbody tr { transition: background-color var(--fast) var(--ease) }
+tbody tr:hover td { background: var(--ink-2) }
+th button { all: unset; cursor: pointer; transition: color var(--fast) var(--ease) }
+th button:hover { color: var(--paper) }
+th button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px }
+th[aria-sort] button { color: var(--paper) }
+tr.cut td { border-bottom: 1px solid var(--gold) }
+td.cell { font-weight: 500 }
+td .res { font-size: .7rem; font-weight: 600; margin-left: var(--s2); letter-spacing: .02em }
+
+/* ---------- honors (awards) ---------- */
+.honors { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--s7) }
+.honor { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: var(--s1) var(--s5); padding: var(--s5) 0; border-bottom: 1px solid var(--hair); align-items: baseline }
+.honor dt { grid-column: 2; grid-row: 1; font-size: .8125rem; color: var(--dim) }
+.honor dd { margin: 0; grid-column: 2 }
+.honor .fig { grid-column: 1; grid-row: 1 / span 3; font: 500 2.75rem/.9 var(--serif); font-variant-numeric: tabular-nums lining-nums; text-align: right; letter-spacing: -.02em }
+.honor .who { font: 500 1.2rem/1.25 var(--serif) }
+.honor .why { font-size: .8125rem; color: var(--faint) }
+.honor.bad .fig { color: var(--red) }
+.honors.compact { grid-template-columns: minmax(0, 1fr) }
+.honors.compact .honor { grid-template-columns: 6rem minmax(0, 1fr) }
+.honors.compact .fig { font-size: 2.25rem }
+@media (max-width: 48rem) { .honors { grid-template-columns: minmax(0, 1fr) } .honor { grid-template-columns: 5.5rem minmax(0, 1fr) } .honor .fig { font-size: 2.25rem } }
+
+/* ---------- manager report ---------- */
+.flag { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--s5) var(--s6); align-items: start; padding: var(--s6) 0; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--hair) }
+.flag svg { width: 3rem; height: 3.75rem; margin-top: .4rem }
+.flag .kicker { color: var(--gold); font-size: .875rem }
+.flag h3 { font-size: clamp(2.2rem, 4.5vw, 3.5rem); margin: var(--s2) 0 var(--s3) }
+.flag p { color: var(--dim); max-width: 60ch }
+.flag p b { color: var(--paper); font-weight: 600 }
+.bars { display: grid; gap: var(--s3) }
+.bars h3 { font-size: 1.5rem; margin-bottom: var(--s2) }
+.brow { display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr) 9.5rem; gap: var(--s4); align-items: center; font-size: .9375rem; padding: var(--s1) 0 }
+.brow .team span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.track { height: 4px; background: var(--ink-3); border-radius: 2px; position: relative; overflow: hidden }
+.track i { position: absolute; inset: 0 auto 0 0; border-radius: 2px; transform-origin: left; transition: filter var(--fast) var(--ease) }
+.brow:hover .track i { filter: brightness(1.25) }
+.brow .v { text-align: right; color: var(--dim); font-size: .8125rem; font-variant-numeric: tabular-nums }
+.brow .v b { color: var(--paper); font-weight: 600 }
+.key { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s5); color: var(--faint); font-size: .8125rem; padding-top: var(--s2) }
+.key i { display: inline-block; width: .75rem; height: 4px; border-radius: 2px; margin-right: var(--s2); vertical-align: middle }
+@media (max-width: 40rem) { .brow { grid-template-columns: minmax(0, 1fr) auto } .brow .track { grid-column: 1 / -1; order: 3 } }
+
+/* ---------- bracket ---------- */
+.bracket { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 var(--s6) }
+.round { display: grid; gap: var(--s5); align-content: space-around }
+.round h4 { font: italic 500 1.15rem/1 var(--serif); color: var(--dim); padding-bottom: var(--s2) }
+.tie { position: relative; border-top: 1px solid var(--hair-2); border-bottom: 1px solid var(--hair-2) }
+.slot { display: grid; grid-template-columns: 1.5rem minmax(0, 1fr) auto; gap: var(--s3); align-items: baseline; padding: var(--s3) 0 }
+.slot + .slot { border-top: 1px solid var(--hair) }
+.slot .sd { font: italic 500 1.1rem/1 var(--serif); color: var(--gold); text-align: right }
+.slot .team { font: 500 1.05rem/1.2 var(--serif) }
+.slot .team span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.slot .p { font-size: .75rem; color: var(--faint) }
+.slot .tbd { color: var(--faint); font: italic 400 1rem/1.2 var(--serif) }
+.round:not(:last-child) .tie::after { content: ""; position: absolute; right: calc(-1 * var(--s6)); top: 50%; width: var(--s6); border-top: 1px solid var(--hair-2) }
+@media (max-width: 48rem) { .bracket { grid-template-columns: minmax(0, 1fr); gap: var(--s6) } .round:not(:last-child) .tie::after { display: none } }
+
+/* ---------- about ---------- */
+.about { margin-top: var(--s9); padding-top: var(--s6); border-top: 1px solid var(--hair-2); display: grid; gap: var(--s3); max-width: var(--measure); color: var(--dim); font-size: .875rem }
+.about h2 { font: italic 500 1.5rem/1 var(--serif); color: var(--paper); margin-bottom: var(--s2) }
+.about p { max-width: 70ch }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 1ms !important; animation: none !important } }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth } }
